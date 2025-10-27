@@ -172,6 +172,9 @@
             color: #00ff88;
             margin-top: 20px;
             text-shadow: 0 0 5px #00ff88;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
         }
         .explosion {
             position: fixed;
@@ -282,6 +285,98 @@
             text-shadow: 0 0 5px #00ff88;
             margin: 10px 0;
         }
+        .favorite-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .favorite-button {
+            position: relative;
+            background: linear-gradient(145deg, #ff4757, #c44569);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .favorite-button:hover {
+            transform: rotateY(5deg) rotateX(5deg);
+        }
+        .favorite-button.disabled {
+            background: linear-gradient(145deg, #333, #555);
+            color: transparent;
+            pointer-events: none;
+            box-shadow: none;
+        }
+        .favorite-button .shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+            transition: left 0.5s ease;
+        }
+        .favorite-button.shining .shine {
+            left: 100%;
+        }
+        #timerBar {
+            width: 500px;
+            height: 20px;
+            background: #333;
+            margin: 10px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        #timerFill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #ff6b6b);
+            width: 100%;
+            transition: width 1s linear;
+        }
+        #timeText {
+            color: #00ff88;
+            font-size: 1em;
+            margin: 5px;
+        }
+        #birthdayMessage {
+            display: none;
+            font-size: 1.5em;
+            color: #00ff88;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 0 20px #00ff88;
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+        #endText {
+            font-size: 1em;
+            color: #e0e0e0;
+            margin-top: 10px;
+            text-transform: lowercase;
+        }
+        @keyframes glowPulse {
+            from { box-shadow: 0 0 10px #00ff88; }
+            to { box-shadow: 0 0 30px #00ff88; }
+        }
+        #successMessage {
+            display: none;
+            font-size: 2em;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
     </style>
 </head>
 <body>
@@ -336,11 +431,32 @@
         Hope you had a lovely day and this will be the best stream
     </div>
 
-    <!-- Puzzle Question -->
+    <!-- Favorite Person Question -->
+    <div id="qFavorite" class="question">
+        <h2>Who is your favorite person in chat</h2>
+        <div class="favorite-grid">
+            <button class="favorite-button" id="btnElement" onclick="showElementModal()">Element</button>
+            <button class="favorite-button" id="btnDrPotions" onclick="handleWrongFavorite(this)">Dr. Potions</button>
+            <button class="favorite-button" id="btnDito" onclick="handleWrongFavorite(this)">Dito</button>
+            <button class="favorite-button" id="btnJowey" onclick="handleWrongFavorite(this)">Jowey</button>
+            <button class="favorite-button" id="btnJits" onclick="handleWrongFavorite(this)">Jits</button>
+            <button class="favorite-button" id="btnSpartan" onclick="handleWrongFavorite(this)">Spartan</button>
+        </div>
+    </div>
+
+    <!-- Element Pop-up -->
+    <div id="elementModal" class="modal">
+        <div class="modal-content">
+            Ah, love you too buddy, knew you would pick me
+            <div class="countdown" id="elementCountdown">Next in: 5</div>
+        </div>
+    </div>
+
+    <!-- Puzzle Question (Labyrinth) -->
     <div id="q3" class="question" style="display: none;">
         <h2>Well this ain't a real question but can you finish this puzzle?</h2>
         <div class="maze-title">
-            Your path towards being a <span class="clickable" id="famousClick" onclick="advanceFromPuzzle()">FAMOUS STREAMER</span>
+            Your path towards being a <span class="clickable" id="famousClick" onclick="showSuccessMessage()">FAMOUS STREAMER</span>
         </div>
         <div class="legend">Green ball is where you gotta go. Don't touch the walls!</div>
         <div class="maze-container" style="width: 500px; height: 500px;">
@@ -349,6 +465,27 @@
         <div class="controls">
             Move your mouse through the labyrinth to guide the dot to the green ball. Avoid walls!
         </div>
+        <div id="timerBar" style="width: 500px; height: 20px; background: #333; margin: 10px auto; border-radius: 10px; overflow: hidden; display: none;">
+            <div id="timerFill" style="height: 100%; background: linear-gradient(90deg, #00ff88, #ff6b6b); width: 100%; transition: width 1s linear;"></div>
+        </div>
+        <p id="timeText" style="color: #00ff88; font-size: 1em; margin: 5px;">Time left: 60s</p>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="final-message" style="display: none; font-size: 2em; color: #00ff88; text-shadow: 0 0 20px #00ff88; animation: glowPulse 2s ease-in-out infinite alternate;">
+        WELL DONE<br>MR KRYS, YOU ARE NOT THAT DUMB AS YOU LOOK<br>HAPPY BIRTHDAY
+    </div>
+
+    <!-- Timeout Messages -->
+    <div id="dumbMessage" class="final-message" style="display: none; font-size: 2em; color: #ff6b6b;">
+        You are still dumb...
+    </div>
+    <div id="ageMessage" class="final-message" style="display: none; font-size: 2em; color: #ff6b6b;">
+        I guess age does not make you wiser
+    </div>
+    <div id="birthdayMessage" class="final-message" style="display: none; font-size: 1.5em; color: #00ff88; text-align: center; max-width: 600px; margin: 0 auto; text-shadow: 0 0 20px #00ff88; animation: glowPulse 2s ease-in-out infinite alternate;">
+        Well any way Happy Birthday and ease of the cocain buddy, i like the chill streams, much love <3
+        <p id="endText" style="font-size: 1em; color: #e0e0e0; margin-top: 10px; text-transform: lowercase;">well that was all, move along with your stream now</p>
     </div>
 
     <!-- Timer -->
@@ -357,7 +494,7 @@
     <!-- Modal for Gay Honesty -->
     <div id="gayModal" class="modal">
         <div class="modal-content">
-            There you go, was it that hard to be honest?
+            There you go, was it hard to be honest?
             <div class="countdown" id="gayCountdown">Next question in: 5</div>
         </div>
     </div>
@@ -370,8 +507,109 @@
         </div>
     </div>
 
+    <!-- Modal for Favorite Sure -->
+    <div id="sureModal" class="modal">
+        <div class="modal-content">
+            Are you sure?
+            <div class="countdown" id="sureCountdown">pop-up closes in 4</div>
+        </div>
+    </div>
+
     <script>
         let clicksLeft = 50;
+        let trolledButtons = new Set(); // Track trolled buttons
+        let labyrinthTimer;
+
+        // Favorite handling
+        function handleWrongFavorite(btn) {
+            const id = btn.id;
+            if (!trolledButtons.has(id)) {
+                showSureModal();
+                trolledButtons.add(id);
+            } else {
+                shineErase(btn);
+            }
+        }
+
+        function shineErase(btn) {
+            btn.style.pointerEvents = 'none';
+            const shine = document.createElement('div');
+            shine.classList.add('shine');
+            btn.appendChild(shine);
+            btn.classList.add('shining');
+            setTimeout(() => {
+                btn.textContent = '';
+                btn.classList.add('disabled');
+                btn.onclick = null;
+                btn.style.pointerEvents = 'none';
+                shine.remove();
+                btn.classList.remove('shining');
+            }, 500);
+        }
+
+        function showElementModal() {
+            const modal = document.getElementById('elementModal');
+            modal.style.display = 'block';
+            let count = 5;
+            const countdownEl = document.getElementById('elementCountdown');
+            const interval = setInterval(() => {
+                count--;
+                countdownEl.textContent = `Next in: ${count}`;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    modal.style.display = 'none';
+                    document.getElementById('qFavorite').style.display = 'none';
+                    advanceToLabyrinth();
+                }
+            }, 1000);
+        }
+
+        function advanceToLabyrinth() {
+            document.getElementById('q3').style.display = 'block';
+            document.getElementById('q3').classList.add('active');
+            initMazeMouse();
+            startLabyrinthTimer();
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+        }
+
+        // Labyrinth timer
+        function startLabyrinthTimer() {
+            const fill = document.getElementById('timerFill');
+            const text = document.getElementById('timeText');
+            const bar = document.getElementById('timerBar');
+            bar.style.display = 'block';
+            let timeLeft = 60;
+            text.textContent = `Time left: ${timeLeft}s`;
+            labyrinthTimer = setInterval(() => {
+                timeLeft--;
+                fill.style.width = ((timeLeft / 60) * 100) + '%';
+                text.textContent = `Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(labyrinthTimer);
+                    onLabyrinthTimeout();
+                }
+            }, 1000);
+        }
+
+        function onLabyrinthTimeout() {
+            document.getElementById('q3').style.display = 'none';
+            document.getElementById('dumbMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('dumbMessage').style.display = 'none';
+                document.getElementById('ageMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('ageMessage').style.display = 'none';
+                    document.getElementById('birthdayMessage').style.display = 'block';
+                }, 3000);
+            }, 3000);
+        }
+
+        function showSuccessMessage() {
+            clearInterval(labyrinthTimer);
+            document.getElementById('q3').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
 
         // Maze variables
         const canvas = document.getElementById('mazeCanvas');
@@ -529,14 +767,10 @@
             });
         }
 
-        function advanceFromPuzzle() {
-            canvas.removeEventListener('mousemove', arguments.callee);
-            document.body.classList.add('shake');
-            setTimeout(() => {
-                document.getElementById('q3').classList.remove('active');
-                document.body.classList.remove('shake');
-                alert('Puzzle trolled! You clicked the real exit. 🎉');
-            }, 500);
+        function showSuccessMessage() {
+            clearInterval(labyrinthTimer);
+            document.getElementById('q3').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
         }
 
         function showGayModal() {
@@ -652,7 +886,7 @@
                                 }, 1000);
                             }, 2000);
                         }, 5000);
-                    }, 3000);
+                    }, 6000); // Increased to 6s for bless
                 }, 800);
             }
         }
@@ -668,9 +902,8 @@
                     clearInterval(interval);
                     timerEl.style.display = 'none';
                     document.getElementById('hopeMessage').style.display = 'none';
-                    document.getElementById('q3').style.display = 'block';
-                    document.getElementById('q3').classList.add('active');
-                    initMazeMouse();
+                    document.getElementById('qFavorite').style.display = 'block';
+                    document.getElementById('qFavorite').classList.add('active');
                 }
             }, 1000);
         }
