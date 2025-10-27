@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Mr Krys! 🎂🕹️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0c0c0c, #1a1a1a, #2d2d2d);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        h1 {
+            font-size: 3em;
+            color: #fff;
+            text-shadow: 0 0 20px #00ff88;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .pulsing {
+            animation: pulse 2s ease-in-out infinite alternate;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px #ff6b6b;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+        .question {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            margin: 20px auto;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .question.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            font-size: 2em;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            margin-bottom: 30px;
+        }
+        button {
+            background: linear-gradient(145deg, #ff4757, #c44569);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before {
+            left: 100%;
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+        }
+        button.troll {
+            background: linear-gradient(145deg, #2ed573, #20bf6b);
+            box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
+        }
+        .options button {
+            display: block;
+            width: 80%;
+            margin: 15px auto;
+        }
+        #noButton {
+            position: relative;
+        }
+        #clickerButton {
+            font-size: 24px;
+            padding: 20px 40px;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            border-radius: 50px;
+        }
+        #clickerButton:active {
+            transform: translateY(4px) scale(0.98);
+        }
+        .feedback {
+            font-size: 1.5em;
+            color: #ff6b6b;
+            margin: 20px 0;
+            animation: shake 0.5s ease-in-out;
+            display: none;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            animation: modalFade 0.3s ease-out;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            margin: 15% auto;
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid #00ff88;
+            width: 70%;
+            max-width: 500px;
+            color: #e0e0e0;
+            font-size: 2em;
+            text-shadow: 0 0 10px #00ff88;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+            animation: modalSlide 0.5s ease-in-out;
+            position: relative;
+        }
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .countdown {
+            font-size: 0.6em;
+            color: #00ff88;
+            margin-top: 20px;
+            text-shadow: 0 0 5px #00ff88;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+        .explosion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(255,71,87,0.8) 0%, rgba(255,71,87,0) 70%);
+            pointer-events: none;
+            animation: explodeFull 0.8s ease-out forwards;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10em;
+        }
+        @keyframes explodeFull {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: scale(1.5) rotate(360deg); opacity: 0; }
+        }
+        .final-message {
+            display: none;
+            font-size: 2em;
+            color: #00ff88;
+            margin: 50px 0;
+            text-shadow: 0 0 20px #00ff88;
+            animation: pulseText 1s ease-in-out infinite alternate;
+        }
+        .big-heal {
+            font-size: 3em !important;
+            color: #ff6b6b !important;
+            text-shadow: 0 0 15px #ff6b6b !important;
+            animation: pulseBig 1.5s ease-in-out infinite alternate !important;
+        }
+        @keyframes pulseText {
+            from { transform: scale(1); }
+            to { transform: scale(1.02); }
+        }
+        @keyframes pulseBig {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        .counter {
+            font-size: 1.5em;
+            color: #e0e0e0;
+            margin: 20px 0;
+        }
+        .lied {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        body.shake {
+            animation: shakeBody 0.5s ease-in-out;
+        }
+        @keyframes shakeBody {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        #timer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1.2em;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            z-index: 1000;
+            display: none;
+        }
+        .maze-container {
+            position: relative;
+            margin: 20px auto;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #mazeCanvas {
+            display: block;
+            background: #111;
+            cursor: crosshair;
+        }
+        .maze-title {
+            font-size: 1.5em;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            margin-bottom: 10px;
+        }
+        .maze-title .clickable {
+            color: #ff6b6b;
+            text-shadow: 0 0 10px #ff6b6b;
+            cursor: pointer;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+        .maze-title .clickable:hover {
+            /* No underline */
+        }
+        .controls {
+            margin-top: 10px;
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+        .legend {
+            color: #00ff88;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px #00ff88;
+            margin: 10px 0;
+        }
+        .favorite-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .favorite-button {
+            position: relative;
+            background: linear-gradient(145deg, #ff4757, #c44569);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .favorite-button:hover {
+            transform: rotateY(5deg) rotateX(5deg);
+        }
+        .favorite-button.disabled {
+            background: linear-gradient(145deg, #333, #555);
+            color: transparent;
+            pointer-events: none;
+            box-shadow: none;
+        }
+        .favorite-button .shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+            transition: left 0.5s ease;
+        }
+        .favorite-button.shining .shine {
+            left: 100%;
+        }
+        #timerBar {
+            width: 500px;
+            height: 20px;
+            background: #333;
+            margin: 10px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        #timerFill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #ff6b6b);
+            width: 100%;
+            transition: width 1s linear;
+        }
+        #timeText {
+            color: #00ff88;
+            font-size: 1em;
+            margin: 5px;
+        }
+        #birthdayMessage {
+            display: none;
+            font-size: 1.5em;
+            color: #00ff88;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 0 20px #00ff88;
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+        #endText {
+            font-size: 1em;
+            color: #e0e0e0;
+            margin-top: 10px;
+            text-transform: lowercase;
+        }
+        @keyframes glowPulse {
+            from { box-shadow: 0 0 10px #00ff88; }
+            to { box-shadow: 0 0 30px #00ff88; }
+        }
+        #successMessage {
+            display: none;
+            font-size: 2em;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Happy Birthday,&nbsp;
+        <span class="pulsing">Mr Krys</span> !
+        &nbsp;🎂🕹️
+    </h1>
+
+    <!-- Question 1 -->
+    <div id="q1" class="question active">
+        <h2>First question to start this off, are you gay?</h2>
+        <button onclick="showGayModal()">YES, I LOVE COCK</button>
+        <button id="noButton">NO, I AM STRAIGHT</button>
+    </div>
+
+    <!-- Question 2 -->
+    <div id="q2" class="question">
+        <h2>What do you want more in your streaming career?</h2>
+        <div class="options">
+            <button onclick="trollOption(this)">Have a nice and happy community</button>
+            <button onclick="trollOption(this)">To do more community nights since i love playing with my people</button>
+            <button onclick="advanceToClicker()">Money and bitches</button>
+        </div>
+        <div id="liedFeedback" class="feedback">Stop lying and answer properly</div>
+    </div>
+
+    <!-- Clicker -->
+    <div id="clicker" class="question">
+        <h2>Click this button 50 times to get a special message for your birthday!</h2>
+        <div class="counter" id="counter">Clicks left: 50</div>
+        <button id="clickerButton" onclick="decrementClick()">Click Me!</button>
+    </div>
+
+    <!-- Final Sequence Messages -->
+    <div id="blessMessage" class="final-message" style="display: none;">
+        For your birthday you should bless this world by
+    </div>
+    <div id="healMessage" class="final-message big-heal" style="display: none;">
+        HEALING YOURSELF
+    </div>
+    <div id="justKidding" class="final-message" style="display: none; font-size: 4em; color: #ff6b6b;">
+        JUST KIDDING....
+    </div>
+    <div id="wellPartially" class="final-message" style="display: none; font-size: 2.5em; color: #00ff88;">
+        Well partially...
+    </div>
+    <div id="kiddingShort" class="final-message" style="display: none; font-size: 3em; color: #ff6b6b;">
+        Kidding...
+    </div>
+    <div id="hopeMessage" class="final-message" style="display: none; font-size: 1.5em;">
+        Hope you had a lovely day and this will be the best stream
+    </div>
+
+    <!-- Favorite Person Question -->
+    <div id="qFavorite" class="question">
+        <h2>Who is your favorite person in chat</h2>
+        <div class="favorite-grid">
+            <button class="favorite-button" id="btnElement" onclick="showElementModal()">Element</button>
+            <button class="favorite-button" id="btnDrPotions" onclick="handleWrongFavorite(this)">Dr. Potions</button>
+            <button class="favorite-button" id="btnDito" onclick="handleWrongFavorite(this)">Dito</button>
+            <button class="favorite-button" id="btnJowey" onclick="handleWrongFavorite(this)">Jowey</button>
+            <button class="favorite-button" id="btnJits" onclick="handleWrongFavorite(this)">Jits</button>
+            <button class="favorite-button" id="btnSpartan" onclick="handleWrongFavorite(this)">Spartan</button>
+        </div>
+    </div>
+
+    <!-- Element Pop-up -->
+    <div id="elementModal" class="modal">
+        <div class="modal-content">
+            Ah, love you too buddy, knew you would pick me
+            <div class="countdown" id="elementCountdown">Next in: 5</div>
+        </div>
+    </div>
+
+    <!-- Puzzle Question (Labyrinth) -->
+    <div id="q3" class="question" style="display: none;">
+        <h2>Well this ain't a real question but can you finish this puzzle?</h2>
+        <div class="maze-title">
+            Your path towards being a <span class="clickable" id="famousClick" onclick="showSuccessMessage()">FAMOUS STREAMER</span>
+        </div>
+        <div class="legend">Green ball is where you gotta go. Don't touch the walls!</div>
+        <div class="maze-container" style="width: 500px; height: 500px;">
+            <canvas id="mazeCanvas" width="500" height="500"></canvas>
+        </div>
+        <div class="controls">
+            Move your mouse through the labyrinth to guide the dot to the green ball. Avoid walls!
+        </div>
+        <div id="timerBar" style="width: 500px; height: 20px; background: #333; margin: 10px auto; border-radius: 10px; overflow: hidden; display: none;">
+            <div id="timerFill" style="height: 100%; background: linear-gradient(90deg, #00ff88, #ff6b6b); width: 100%; transition: width 1s linear;"></div>
+        </div>
+        <p id="timeText" style="color: #00ff88; font-size: 1em; margin: 5px;">Time left: 60s</p>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="final-message" style="display: none; font-size: 2em; color: #00ff88; text-shadow: 0 0 20px #00ff88; animation: glowPulse 2s ease-in-out infinite alternate;">
+        WELL DONE<br>MR KRYS, YOU ARE NOT THAT DUMB AS YOU LOOK<br>HAPPY BIRTHDAY
+    </div>
+
+    <!-- Timeout Messages -->
+    <div id="dumbMessage" class="final-message" style="display: none; font-size: 2em; color: #ff6b6b;">
+        You are still dumb...
+    </div>
+    <div id="ageMessage" class="final-message" style="display: none; font-size: 2em; color: #ff6b6b;">
+        I guess age does not make you wiser
+    </div>
+    <div id="birthdayMessage" class="final-message" style="display: none; font-size: 1.5em; color: #00ff88; text-align: center; max-width: 600px; margin: 0 auto; text-shadow: 0 0 20px #00ff88; animation: glowPulse 2s ease-in-out infinite alternate;">
+        Well any way Happy Birthday and ease of the cocain buddy, i like the chill streams, much love <3
+        <p id="endText" style="font-size: 1em; color: #e0e0e0; margin-top: 10px; text-transform: lowercase;">well that was all, move along with your stream now</p>
+    </div>
+
+    <!-- Timer -->
+    <div id="timer"></div>
+
+    <!-- Modal for Gay Honesty -->
+    <div id="gayModal" class="modal">
+        <div class="modal-content">
+            There you go, was it hard to be honest?
+            <div class="countdown" id="gayCountdown">Next question in: 5</div>
+        </div>
+    </div>
+
+    <!-- Modal for Career Honesty -->
+    <div id="honestyModal" class="modal">
+        <div class="modal-content">
+            Nice, honesty will get you long way
+            <div class="countdown" id="countdown">Next question in: 5</div>
+        </div>
+    </div>
+
+    <!-- Modal for Favorite Sure -->
+    <div id="sureModal" class="modal">
+        <div class="modal-content">
+            Are you sure?
+            <div class="countdown" id="sureCountdown">pop-up closes in 4</div>
+        </div>
+    </div>
+
+    <script>
+        let clicksLeft = 50;
+        let trolledButtons = new Set(); // Track trolled buttons
+        let labyrinthTimer;
+
+        // Favorite handling
+        function handleWrongFavorite(btn) {
+            const id = btn.id;
+            if (!trolledButtons.has(id)) {
+                showSureModal();
+                trolledButtons.add(id);
+            } else {
+                shineErase(btn);
+            }
+        }
+
+        function shineErase(btn) {
+            btn.style.pointerEvents = 'none';
+            const shine = document.createElement('div');
+            shine.classList.add('shine');
+            btn.appendChild(shine);
+            btn.classList.add('shining');
+            setTimeout(() => {
+                btn.textContent = '';
+                btn.classList.add('disabled');
+                btn.onclick = null;
+                btn.style.pointerEvents = 'none';
+                shine.remove();
+                btn.classList.remove('shining');
+            }, 500);
+        }
+
+        function showElementModal() {
+            const modal = document.getElementById('elementModal');
+            modal.style.display = 'block';
+            let count = 5;
+            const countdownEl = document.getElementById('elementCountdown');
+            const interval = setInterval(() => {
+                count--;
+                countdownEl.textContent = `Next in: ${count}`;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    modal.style.display = 'none';
+                    document.getElementById('qFavorite').style.display = 'none';
+                    advanceToLabyrinth();
+                }
+            }, 1000);
+        }
+
+        function advanceToLabyrinth() {
+            document.getElementById('q3').style.display = 'block';
+            document.getElementById('q3').classList.add('active');
+            initMazeMouse();
+            startLabyrinthTimer();
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+        }
+
+        // Labyrinth timer
+        function startLabyrinthTimer() {
+            const fill = document.getElementById('timerFill');
+            const text = document.getElementById('timeText');
+            const bar = document.getElementById('timerBar');
+            bar.style.display = 'block';
+            let timeLeft = 60;
+            text.textContent = `Time left: ${timeLeft}s`;
+            labyrinthTimer = setInterval(() => {
+                timeLeft--;
+                fill.style.width = ((timeLeft / 60) * 100) + '%';
+                text.textContent = `Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(labyrinthTimer);
+                    onLabyrinthTimeout();
+                }
+            }, 1000);
+        }
+
+        function onLabyrinthTimeout() {
+            document.getElementById('q3').style.display = 'none';
+            document.getElementById('dumbMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('dumbMessage').style.display = 'none';
+                document.getElementById('ageMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('ageMessage').style.display = 'none';
+                    document.getElementById('birthdayMessage').style.display = 'block';
+                }, 3000);
+            }, 3000);
+        }
+
+        function showSuccessMessage() {
+            clearInterval(labyrinthTimer);
+            document.getElementById('q3').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        // Maze variables
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+        const TILE_SIZE = 33;
+        const MAZE_WIDTH = 15;
+        const MAZE_HEIGHT = 15;
+
+        // Maze with path from right to left
+        const maze = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+            [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+            [1,0,1,0,0,0,0,1,0,0,0,0,1,0,1],
+            [1,0,1,0,1,1,0,1,1,1,1,0,1,0,1],
+            [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+            [1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],
+            [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
+            [1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
+            [1,0,0,0,1,0,0,0,0,0,0,0,1,0,1],
+            [1,1,0,1,1,1,1,1,1,1,1,0,1,0,1],
+            [1,0,0,0,0,0,0,0,0,1,0,0,0,0,1],
+            [1,0,1,1,1,1,0,1,0,1,0,1,1,1,1],
+            [1,0,0,0,0,1,0,1,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        let playerX = 13;
+        let playerY = 1;
+        let targetX = 1;
+        let targetY = 13;
+        let gameActive = false;
+        let lastSafeX = 13;
+        let lastSafeY = 1;
+        const CLOSE_THRESHOLD = 2; // Tiles
+
+        function getRandomEmptyTile() {
+            let x, y;
+            do {
+                x = Math.floor(Math.random() * MAZE_WIDTH);
+                y = Math.floor(Math.random() * MAZE_HEIGHT);
+            } while (maze[y][x] !== 0 || (x === 0 && y === 0)); // Avoid borders or starts
+            return {x, y};
+        }
+
+        function drawArrow(fromX, fromY, toX, toY) {
+            const headlen = 10;
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Draw walls
+            ctx.fillStyle = '#333';
+            for (let y = 0; y < MAZE_HEIGHT; y++) {
+                for (let x = 0; x < MAZE_WIDTH; x++) {
+                    if (maze[y][x] === 1) {
+                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    }
+                }
+            }
+            // Draw target
+            const ballCenterX = targetX * TILE_SIZE + TILE_SIZE / 2;
+            const ballCenterY = targetY * TILE_SIZE + TILE_SIZE / 2;
+            ctx.beginPath();
+            ctx.arc(ballCenterX, ballCenterY, TILE_SIZE / 3, 0, Math.PI * 2);
+            ctx.fillStyle = '#00ff88';
+            ctx.fill();
+            // Label near green ball - white bold
+            const textX = targetX * TILE_SIZE + TILE_SIZE / 2 + 15; // Offset to right
+            const textY1 = targetY * TILE_SIZE + TILE_SIZE / 2 - 5;
+            const textY2 = targetY * TILE_SIZE + TILE_SIZE / 2 + 10;
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px Orbitron';
+            ctx.textAlign = 'left';
+            ctx.fillText('FAMOUS', textX, textY1);
+            ctx.fillText('STREAMER', textX, textY2);
+            // Draw arrow from text to ball
+            drawArrow(textX + 20, (textY1 + textY2) / 2, ballCenterX, ballCenterY);
+            // Draw player dot only if active
+            if (gameActive) {
+                ctx.beginPath();
+                ctx.arc(playerX * TILE_SIZE + TILE_SIZE / 2, playerY * TILE_SIZE + TILE_SIZE / 2, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+            } else {
+                // Show start position
+                ctx.beginPath();
+                ctx.arc(lastSafeX * TILE_SIZE + TILE_SIZE / 2, lastSafeY * TILE_SIZE + TILE_SIZE / 2, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+            }
+        }
+
+        function initMazeMouse() {
+            gameActive = false;
+            drawMaze();
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                const tileX = Math.floor(mouseX / TILE_SIZE);
+                const tileY = Math.floor(mouseY / TILE_SIZE);
+
+                if (tileX >= 0 && tileX < MAZE_WIDTH && tileY >= 0 && tileY < MAZE_HEIGHT) {
+                    if (maze[tileY][tileX] === 0) {
+                        // Safe empty tile
+                        if (!gameActive) {
+                            gameActive = true;
+                            lastSafeX = tileX;
+                            lastSafeY = tileY;
+                        }
+                        playerX = tileX;
+                        playerY = tileY;
+                        lastSafeX = tileX;
+                        lastSafeY = tileY;
+                        // Check closeness to target
+                        const dist = Math.sqrt(Math.pow(tileX - targetX, 2) + Math.pow(tileY - targetY, 2));
+                        if (dist < CLOSE_THRESHOLD) {
+                            // Troll: reset player to corner, move ball
+                            playerX = 13;
+                            playerY = 1;
+                            const newTarget = getRandomEmptyTile();
+                            targetX = newTarget.x;
+                            targetY = newTarget.y;
+                            gameActive = false;
+                        }
+                        drawMaze();
+                    } else {
+                        // Wall hit
+                        if (gameActive) {
+                            // Reset
+                            playerX = lastSafeX;
+                            playerY = lastSafeY;
+                            // Move green ball to new random
+                            const newTarget = getRandomEmptyTile();
+                            targetX = newTarget.x;
+                            targetY = newTarget.y;
+                            gameActive = false;
+                            drawMaze();
+                        }
+                    }
+                }
+            });
+        }
+
+        function showSuccessMessage() {
+            clearInterval(labyrinthTimer);
+            document.getElementById('q3').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        function showGayModal() {
+            const modal = document.getElementById('gayModal');
+            modal.style.display = 'block';
+            let count = 5;
+            const countdownEl = document.getElementById('gayCountdown');
+            const interval = setInterval(() => {
+                count--;
+                countdownEl.textContent = `Next question in: ${count}`;
+                if (count <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+                clearInterval(interval);
+                document.getElementById('q1').classList.remove('active');
+                document.getElementById('q2').classList.add('active');
+                document.body.classList.add('shake');
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                }, 500);
+            }, 5000);
+        }
+
+        const noButton = document.getElementById('noButton');
+        noButton.onmouseover = function(e) {
+            const maxX = window.innerWidth - 100;
+            const maxY = window.innerHeight - 100;
+            this.style.position = 'fixed';
+            this.style.left = Math.random() * maxX + 'px';
+            this.style.top = Math.random() * maxY + 'px';
+            this.style.zIndex = '100';
+        };
+
+        function trollOption(btn) {
+            btn.classList.add('lied');
+            const feedback = document.getElementById('liedFeedback');
+            feedback.style.display = 'block';
+            feedback.style.opacity = '1';
+            setTimeout(() => {
+                btn.style.display = 'none';
+                feedback.style.display = 'none';
+            }, 2000);
+        }
+
+        function advanceToClicker() {
+            const modal = document.getElementById('honestyModal');
+            modal.style.display = 'block';
+            let count = 5;
+            const countdownEl = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                count--;
+                countdownEl.textContent = `Next question in: ${count}`;
+                if (count <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+                clearInterval(interval);
+                document.getElementById('q2').classList.remove('active');
+                document.getElementById('clicker').classList.add('active');
+                document.body.classList.add('shake');
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                }, 500);
+            }, 5000);
+        }
+
+        function decrementClick() {
+            clicksLeft--;
+            document.getElementById('counter').textContent = `Clicks left: ${clicksLeft}`;
+            const btn = document.getElementById('clickerButton');
+            btn.style.transform = 'translateY(4px) scale(0.98)';
+            setTimeout(() => {
+                btn.style.transform = '';
+            }, 150);
+
+            if (clicksLeft <= 0) {
+                const explosion = document.createElement('div');
+                explosion.textContent = '💥';
+                explosion.classList.add('explosion');
+                document.body.appendChild(explosion);
+                setTimeout(() => explosion.remove(), 800);
+
+                btn.style.display = 'none';
+                document.getElementById('counter').style.display = 'none';
+
+                setTimeout(() => {
+                    document.getElementById('clicker').classList.remove('active');
+                    document.getElementById('blessMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('blessMessage').style.display = 'none';
+                        document.getElementById('healMessage').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('healMessage').style.display = 'none';
+                            document.getElementById('justKidding').style.display = 'block';
+                            setTimeout(() => {
+                                document.getElementById('justKidding').style.display = 'none';
+                                document.getElementById('wellPartially').style.display = 'block';
+                                setTimeout(() => {
+                                    document.getElementById('wellPartially').style.display = 'none';
+                                    document.getElementById('kiddingShort').style.display = 'block';
+                                    setTimeout(() => {
+                                        document.getElementById('kiddingShort').style.display = 'none';
+                                        document.getElementById('hopeMessage').style.display = 'block';
+                                        showTimerWithHope();
+                                    }, 1000);
+                                }, 1000);
+                            }, 2000);
+                        }, 5000);
+                    }, 6000); // Increased to 6s for bless
+                }, 800);
+            }
+        }
+
+        function showTimerWithHope() {
+            const timerEl = document.getElementById('timer');
+            timerEl.style.display = 'block';
+            let count = 5;
+            const interval = setInterval(() => {
+                count--;
+                timerEl.textContent = `next question in ${count}`;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    timerEl.style.display = 'none';
+                    document.getElementById('hopeMessage').style.display = 'none';
+                    document.getElementById('qFavorite').style.display = 'block';
+                    document.getElementById('qFavorite').classList.add('active');
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
